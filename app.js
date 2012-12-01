@@ -5,42 +5,48 @@ $(function () {
   var _offset    = window.location.search.match(/offset=([0-9]+)/i);
   var offset     = _offset === null ? 0 : _offset[1] * 1;
 
-  $(document).on('keyup', ':not(input), :not(textarea), :not(select)', function (e) {
-    switch (e.keyCode) {
-      case 74: // J
-        updateIndex(1);
-      break;
+  $(document).on('keyup', function (e) {
+    var el = e.target || e.srcElement;
 
-      case 75: // K
-        updateIndex(-1);
-      break;
+    if (! (el.tagName == 'INPUT' || el.tagName == 'SELECT' || el.tagName == 'TEXTAREA' || (el.contentEditable && el.contentEditable == 'true'))) {
+      e.preventDefault();
 
-      case 13: // Enter
-        window.location = getItemLocation(item_index);
-      break;
+      switch (e.keyCode) {
+        case 74: // J
+          updateIndex(1);
+        break;
 
-      case 37: // Left arrow
-        window.location = getPageLocation(-1);
-      break;
+        case 75: // K
+          updateIndex(-1);
+        break;
 
-      case 39: // Right arrow
-        window.location = getPageLocation(1);
-      break;
+        case 13: // Enter
+          window.location = getItemLocation(item_index);
+        break;
 
-      case 81: // Q
-        if (e.ctrlKey) {
-          var reply_link = getItem(item_index).find('[data-trigger=quickreply]');
+        case 37: // Left arrow
+          window.location = getPageLocation(-1);
+        break;
 
-          if (reply_link.length > 0) {
-            $('body').animate({scrollTop: $('#post-content').offset().top}, 400, function () {
-              $('#post-content').val($('#post-content').val() + '@' + reply_link.data('name')).focus();
-            });
+        case 39: // Right arrow
+          window.location = getPageLocation(1);
+        break;
+
+        case 81: // Q
+          if (e.ctrlKey) {
+            var reply_link = getItem(item_index).find('[data-trigger=quickreply]');
+
+            if (reply_link.length > 0) {
+              $('body').animate({scrollTop: $('#post-content').offset().top}, 400, function () {
+                $('#post-content').val($('#post-content').val() + '@' + reply_link.data('name')).focus();
+              });
+            }
           }
-        }
-      break;
-    }
+        break;
+      }
 
-    return false;
+      return false;
+    }
   });
 
   var getItem = function (index) {
